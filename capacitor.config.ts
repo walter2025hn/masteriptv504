@@ -4,9 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.masteriptv.app',
   appName: 'Master IPTV',
   webDir: 'www',
-  server: {
-    androidScheme: 'https'
-  }
+  server: { androidScheme: 'https' }
 };
 
 export default config;

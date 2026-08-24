@@ -1,43 +1,33 @@
-# Master IPTV
+# Master IPTV v2
 
-Reproductor IPTV web preparado para GitHub Pages y Android mediante Capacitor.
+Versión 2 de Master IPTV, preparada para GitHub Pages y Android con Capacitor.
 
-## Qué incluye
+## Novedades v2
 
-- TV, Películas y Series.
-- M3U por URL HTTP/HTTPS o contenido pegado.
-- Xtream Codes mediante servidor HTTP/HTTPS, usuario y contraseña.
-- Categorías y buscador.
-- Reproductor HLS/MP4 compatible con el navegador.
-- Guardado local de fuentes en el dispositivo/navegador.
-- Interfaz responsive con animaciones.
-- GitHub Actions para publicar `www/` en GitHub Pages.
-- Proyecto Capacitor para generar APK/AAB.
+- TV en vivo.
+- Películas.
+- Series con temporadas y episodios para Xtream Codes.
+- Favoritos.
+- Historial.
+- Buscador.
+- Categorías.
+- Múltiples listas guardadas.
+- M3U por URL o contenido pegado.
+- Xtream Codes por HTTP/HTTPS.
+- Reproductor HLS/MP4.
+- Interfaz responsive.
+- Workflow de GitHub Pages actualizado a las versiones actuales de las acciones.
 
-> Utiliza únicamente listas y servicios que tengas autorización para utilizar.
+## GitHub Pages
 
-## 1. Subir a GitHub
+En el repositorio:
+Settings → Pages → Source → GitHub Actions.
 
-Crea un repositorio, por ejemplo `master-iptv`, y sube todo el contenido de esta carpeta.
+Cada push a `main` vuelve a publicar `www/`.
 
-Después entra en:
-Settings → Pages → Build and deployment → Source → GitHub Actions.
+## Android
 
-El workflow incluido publicará automáticamente la carpeta `www/`.
-
-## 2. Probar en GitHub Pages
-
-Después de que termine Actions, GitHub mostrará la URL de Pages en:
-Settings → Pages.
-
-## 3. Generar Android
-
-Requisitos:
-- Node.js LTS
-- Android Studio
-- Android SDK
-
-En una terminal dentro del proyecto:
+Instala Node.js LTS y Android Studio. Después:
 
 ```bash
 npm install
@@ -46,18 +36,12 @@ npx cap sync android
 npx cap open android
 ```
 
-En Android Studio puedes ejecutar la aplicación o generar el APK.
+Desde Android Studio puedes generar un APK o AAB.
 
-También puedes usar:
+## Importante
 
-```bash
-npm run build:android
-```
+Las credenciales de Xtream se guardan localmente en el dispositivo mediante `localStorage`; no se envían a Master IPTV. No pongas credenciales reales dentro del código del repositorio.
 
-Para una versión distribuible conviene configurar firma de lanzamiento.
+Los servidores IPTV deben permitir las peticiones necesarias desde navegador/WebView. Algunos servidores bloquean CORS.
 
-## Nota IPTV
-
-Un navegador o WebView puede bloquear peticiones a servidores que no permitan CORS. Eso depende del servidor IPTV y no de GitHub Pages.
-
-La versión actual deja el catálogo de series preparado, pero la pantalla de temporadas/episodios puede añadirse después con `get_series_info` de Xtream.
+Usa únicamente listas y servicios que tengas autorización para utilizar.

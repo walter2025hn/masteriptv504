@@ -2,223 +2,172 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Master IPTV</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b12">
+<meta name="description" content="Master IPTV - reproductor IPTV">
+<title>Master IPTV v2</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17"></script>
 <style>
-:root{--bg:#080b12;--panel:#111722;--panel2:#171e2b;--text:#f5f7fb;--muted:#9ba7ba;--accent:#6c63ff;--accent2:#8b84ff;--border:#252e3d}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#070a10,#0d1220 55%,#090b12);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
-.app{display:flex;min-height:100vh}.side{width:250px;background:rgba(10,14,22,.96);border-right:1px solid var(--border);padding:22px 14px;position:fixed;inset:0 auto 0 0;z-index:5}
-.logo{font-size:22px;font-weight:800;padding:8px 12px 24px}.logo span{color:var(--accent)}
-.nav button,.sourceBtn{width:100%;border:0;background:transparent;color:var(--muted);padding:13px 14px;border-radius:12px;text-align:left;font-size:15px;cursor:pointer;transition:.2s}
-.nav button:hover,.nav button.active,.sourceBtn:hover{background:var(--panel2);color:#fff;transform:translateX(3px)}
-.main{margin-left:250px;width:calc(100% - 250px);padding:22px;min-width:0}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:20px}
-.search{flex:1;max-width:650px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 15px;color:#fff;outline:0}.btn{border:0;border-radius:12px;padding:11px 15px;background:var(--accent);color:white;font-weight:700;cursor:pointer;transition:.2s}.btn:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 8px 25px rgba(108,99,255,.2)}
-.hero{background:linear-gradient(120deg,#171d32,#101722);border:1px solid var(--border);border-radius:20px;padding:25px;margin-bottom:22px}.hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;color:var(--muted)}
-.tabs{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}.tab{padding:9px 14px;border-radius:999px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer}.tab.active{background:var(--accent);color:white;border-color:transparent}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:15px}.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:.22s}.card:hover{transform:translateY(-4px);border-color:#414c62}.poster{width:100%;aspect-ratio:16/9;object-fit:cover;background:#0b0f17;display:block}.cardbody{padding:12px}.title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{font-size:12px;color:var(--muted);margin-top:5px}
-.empty{padding:45px 20px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:16px}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal.show{display:flex}.box{width:min(620px,100%);background:#101620;border:1px solid var(--border);border-radius:20px;padding:22px}.box h2{margin-top:0}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{margin-bottom:12px}.field label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}.field input,.field textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0a0e15;color:#fff;outline:0}.field textarea{min-height:110px;resize:vertical}.actions{display:flex;gap:9px;justify-content:flex-end}.secondary{background:#202838}
-.player{position:fixed;inset:0;background:#05070b;display:none;z-index:30;flex-direction:column}.player.show{display:flex}.playerbar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#0d1119}.playerbar h3{margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.videoWrap{flex:1;display:flex;align-items:center;justify-content:center;background:#000}.videoWrap video{width:100%;height:100%;object-fit:contain}.close{background:#202838}
-.toast{position:fixed;right:20px;bottom:20px;background:#171e2b;border:1px solid var(--border);padding:12px 15px;border-radius:12px;display:none;z-index:50}.toast.show{display:block}
-@media(max-width:800px){.side{width:70px;padding:14px 8px}.logo{font-size:0;text-align:center}.logo span{font-size:20px}.nav button{font-size:0;text-align:center}.nav button:before{content:'•';font-size:22px}.main{margin-left:70px;width:calc(100% - 70px);padding:14px}.row{grid-template-columns:1fr}.grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}.hero h1{font-size:24px}}
+:root{--bg:#070a10;--panel:#101620;--panel2:#171e2b;--text:#f7f8fb;--muted:#9ba7ba;--accent:#6c63ff;--accent2:#8b84ff;--border:#252e3d;--danger:#e35d6a}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+body{background:radial-gradient(circle at 85% 5%,#161a35 0,#070a10 38%),var(--bg)}
+button,input,textarea{font:inherit}.app{min-height:100vh}.side{width:255px;position:fixed;z-index:10;inset:0 auto 0 0;background:rgba(9,13,20,.96);border-right:1px solid var(--border);padding:20px 14px}.logo{font-weight:900;font-size:23px;padding:6px 12px 24px}.logo span{color:var(--accent)}
+.nav button{width:100%;border:0;background:transparent;color:var(--muted);padding:13px 14px;border-radius:12px;text-align:left;cursor:pointer;transition:.2s;margin:2px 0}.nav button:hover,.nav button.active{background:var(--panel2);color:#fff;transform:translateX(3px)}
+.main{margin-left:255px;padding:20px 24px;min-height:100vh}.top{display:flex;gap:10px;align-items:center;margin-bottom:18px}.search{flex:1;max-width:700px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 15px;color:#fff;outline:none}.btn{border:0;border-radius:12px;padding:11px 15px;background:var(--accent);color:#fff;font-weight:800;cursor:pointer;transition:.2s}.btn:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 8px 25px #6c63ff22}.secondary{background:#202838}.danger{background:#48202a}.hero{background:linear-gradient(120deg,#171d32,#101722);border:1px solid var(--border);border-radius:20px;padding:25px;margin-bottom:18px}.hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;color:var(--muted)}.chips{display:flex;gap:8px;overflow:auto;padding:2px 0 16px}.chip{white-space:nowrap;padding:9px 14px;border-radius:999px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer}.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:15px}.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:.22s;position:relative}.card:hover{transform:translateY(-4px);border-color:#48546b}.poster{width:100%;aspect-ratio:16/9;display:block;object-fit:cover;background:#0b0f17}.cardbody{padding:12px}.title{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{font-size:12px;color:var(--muted);margin-top:5px}.fav{position:absolute;right:8px;top:8px;border:0;border-radius:999px;width:36px;height:36px;background:#080b12bb;color:#fff;cursor:pointer;font-size:18px}.fav.on{color:#ffd85a}.empty{padding:45px 20px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:16px}.backrow{display:flex;align-items:center;gap:10px;margin-bottom:16px}.backrow h2{margin:0;flex:1}.modal,.player{position:fixed;inset:0;background:#000b;display:none;z-index:30}.modal.show{display:flex;align-items:center;justify-content:center;padding:18px}.box{width:min(650px,100%);max-height:92vh;overflow:auto;background:#101620;border:1px solid var(--border);border-radius:20px;padding:22px}.box h2{margin-top:0}.tabs{display:flex;gap:8px;margin-bottom:14px}.tab{border:1px solid var(--border);background:var(--panel);color:var(--muted);padding:9px 14px;border-radius:10px;cursor:pointer}.tab.active{background:var(--accent);color:#fff}.field{margin-bottom:12px}.field label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}.field input,.field textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#090d14;color:#fff;outline:0}.field textarea{min-height:115px;resize:vertical}.actions{display:flex;gap:9px;justify-content:flex-end}.saved{border:1px solid var(--border);border-radius:12px;padding:11px;margin:8px 0;background:#0b1018;display:flex;gap:10px;align-items:center}.saved div{flex:1}.saved small{display:block;color:var(--muted);margin-top:3px}.player{flex-direction:column;background:#000}.player.show{display:flex}.playerbar{display:flex;align-items:center;gap:10px;padding:11px 14px;background:#0d1119}.playerbar h3{margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.videoWrap{flex:1;display:flex;align-items:center;justify-content:center;background:#000}.videoWrap video{width:100%;height:100%;object-fit:contain}.toast{position:fixed;right:20px;bottom:20px;background:#171e2b;border:1px solid var(--border);padding:12px 15px;border-radius:12px;display:none;z-index:60}.toast.show{display:block}
+@media(max-width:820px){.side{width:72px;padding:12px 8px}.logo{font-size:0;text-align:center}.logo span{font-size:19px}.nav button{font-size:0;text-align:center}.nav button:before{content:'•';font-size:24px}.main{margin-left:72px;padding:14px}.hero{padding:20px}.hero h1{font-size:24px}.grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="side">
-  <div class="logo">Master <span>IPTV</span></div>
-  <div class="nav">
-    <button class="active" data-view="home">⌂ Inicio</button>
-    <button data-view="tv">▣ TV</button>
-    <button data-view="movies">▶ Películas</button>
-    <button data-view="series">▤ Series</button>
-    <button id="addBtn">＋ Agregar lista</button>
-  </div>
+ <div class="logo">Master <span>IPTV</span></div>
+ <div class="nav">
+  <button class="active" data-view="home">⌂ Inicio</button>
+  <button data-view="tv">▣ TV en vivo</button>
+  <button data-view="movies">▶ Películas</button>
+  <button data-view="series">▤ Series</button>
+  <button data-view="favorites">★ Favoritos</button>
+  <button data-view="history">◷ Historial</button>
+  <button id="sourcesBtn">☷ Mis listas</button>
+  <button id="addBtn">＋ Agregar lista</button>
+ </div>
 </aside>
-
 <main class="main">
-  <div class="top">
-    <input id="search" class="search" placeholder="Buscar canales, películas o series...">
-    <button class="btn" id="refreshBtn">Actualizar</button>
-  </div>
-  <section class="hero">
-    <h1 id="welcome">Master IPTV</h1>
-    <p id="status">Agrega una lista M3U o inicia sesión con Xtream Codes.</p>
-  </section>
-  <div class="tabs" id="tabs"></div>
-  <section id="content"></section>
+ <div class="top"><input id="search" class="search" placeholder="Buscar canales, películas, series..."><button class="btn" id="refreshBtn">Actualizar</button></div>
+ <section class="hero"><h1 id="welcome">Master IPTV</h1><p id="status">Agrega una lista M3U o conecta un servidor Xtream Codes autorizado.</p></section>
+ <div id="chips" class="chips"></div>
+ <section id="content"></section>
 </main>
 </div>
 
 <div class="modal" id="modal">
-<div class="box">
-  <h2>Agregar fuente</h2>
-  <div class="tabs">
-    <button class="tab active" id="m3uTab">M3U</button>
-    <button class="tab" id="xtreamTab">Xtream Codes</button>
-  </div>
+ <div class="box">
+  <h2>Agregar lista</h2>
+  <div class="tabs"><button class="tab active" id="m3uTab">M3U</button><button class="tab" id="xtreamTab">Xtream Codes</button></div>
   <div id="m3uForm">
-    <div class="field"><label>Nombre de la lista</label><input id="m3uName" placeholder="Mi lista"></div>
-    <div class="field"><label>URL M3U (HTTP o HTTPS)</label><input id="m3uUrl" placeholder="https://ejemplo.com/lista.m3u"></div>
-    <div class="field"><label>O, pega aquí el contenido M3U</label><textarea id="m3uText" placeholder="#EXTM3U&#10;#EXTINF:-1 group-title=&quot;TV&quot;,Canal&#10;https://..."></textarea></div>
+   <div class="field"><label>Nombre</label><input id="m3uName" placeholder="Mi lista"></div>
+   <div class="field"><label>URL M3U HTTP/HTTPS</label><input id="m3uUrl" placeholder="https://servidor/lista.m3u"></div>
+   <div class="field"><label>O pega el contenido M3U</label><textarea id="m3uText" placeholder="#EXTM3U&#10;#EXTINF:-1 group-title=&quot;TV&quot;,Canal&#10;https://..."></textarea></div>
   </div>
   <div id="xtreamForm" style="display:none">
-    <div class="field"><label>Nombre de la lista</label><input id="xtName" placeholder="Mi servidor"></div>
-    <div class="field"><label>Servidor / Host (HTTP o HTTPS)</label><input id="xtHost" placeholder="https://servidor:puerto"></div>
-    <div class="row">
-      <div class="field"><label>Usuario</label><input id="xtUser"></div>
-      <div class="field"><label>Contraseña</label><input id="xtPass" type="password"></div>
-    </div>
+   <div class="field"><label>Nombre</label><input id="xtName" placeholder="Mi servidor"></div>
+   <div class="field"><label>Servidor HTTP/HTTPS</label><input id="xtHost" placeholder="https://servidor:puerto"></div>
+   <div class="field"><label>Usuario</label><input id="xtUser"></div>
+   <div class="field"><label>Contraseña</label><input id="xtPass" type="password"></div>
   </div>
   <div class="actions"><button class="btn secondary" id="cancelBtn">Cancelar</button><button class="btn" id="saveBtn">Guardar y cargar</button></div>
+ </div>
 </div>
+
+<div class="modal" id="sourcesModal">
+ <div class="box"><h2>Mis listas</h2><div id="sourcesList"></div><div class="actions"><button class="btn secondary" id="closeSources">Cerrar</button></div></div>
 </div>
 
 <div class="player" id="player">
-  <div class="playerbar"><button class="btn close" id="closePlayer">← Volver</button><h3 id="playerTitle">Reproductor</h3></div>
-  <div class="videoWrap"><video id="video" controls autoplay playsinline></video></div>
+ <div class="playerbar"><button class="btn secondary" id="closePlayer">← Volver</button><h3 id="playerTitle">Reproductor</h3></div>
+ <div class="videoWrap"><video id="video" controls autoplay playsinline></video></div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY='master_iptv_sources_v1';
-let sources=JSON.parse(localStorage.getItem(KEY)||'[]');
-let items=[], currentView='home', currentGroup='Todos', hls=null;
-
+const KEY='master_iptv_sources_v2', FAV='master_iptv_favorites_v2', HIST='master_iptv_history_v2';
+let sources=JSON.parse(localStorage.getItem(KEY)||'[]'), favorites=JSON.parse(localStorage.getItem(FAV)||'[]'), history=JSON.parse(localStorage.getItem(HIST)||'[]');
+let items=[], currentView='home', currentGroup='Todos', currentSeries=null, currentSeriesEpisodes=[], hls=null;
 const $=id=>document.getElementById(id);
-function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2800)}
-function saveSources(){localStorage.setItem(KEY,JSON.stringify(sources))}
-function cleanUrl(s){return (s||'').trim().replace(/^["']|["']$/g,'')}
-function parseAttrs(line){
-  const attrs={}; const re=/([\\w-]+)=(?:"([^"]*)"|([^\\s,]+))/g; let m;
-  while((m=re.exec(line))) attrs[m[1].toLowerCase()]=m[2]??m[3]??'';
-  return attrs;
-}
-function parseM3U(text){
-  const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean), out=[];
-  for(let i=0;i<lines.length;i++){
-    if(!lines[i].toUpperCase().startsWith('#EXTINF')) continue;
-    const info=lines[i], url=lines[i+1] && !lines[i+1].startsWith('#') ? cleanUrl(lines[i+1]) : '';
-    if(!url) continue;
-    const comma=info.indexOf(','), title=comma>=0?info.slice(comma+1).trim():'Sin nombre';
-    const a=parseAttrs(info);
-    const group=a['group-title']||a['group']||'Otros';
-    const logo=a['tvg-logo']||a['logo']||'';
-    out.push({title,url,group,logo,type:guessType(group,title)});
-  }
-  return out;
-}
-function guessType(group,title){
-  const s=(group+' '+title).toLowerCase();
-  if(/series|serie|season|temporada|episode|episodio/.test(s)) return 'series';
-  if(/movie|pelicula|película|cine|vod|film/.test(s)) return 'movies';
-  return 'tv';
-}
-async function loadM3U(source){
-  let text=source.text;
-  if(!text){
-    const r=await fetch(source.url); if(!r.ok) throw new Error('No se pudo descargar la lista M3U');
-    text=await r.text();
-  }
-  return parseM3U(text);
-}
-async function xtreamFetch(source,action,extra=''){
-  const base=source.host.replace(/\/+$/,'')+'/player_api.php';
-  const q=new URLSearchParams({username:source.username,password:source.password,action,...Object.fromEntries(new URLSearchParams(extra))});
-  const r=await fetch(base+'?'+q.toString());
-  if(!r.ok) throw new Error('Error HTTP '+r.status);
-  return r.json();
-}
-async function loadXtream(source){
-  const info=await xtreamFetch(source,'');
-  if(!info.user_info || String(info.user_info.auth)!=='1') throw new Error('Usuario o contraseña no válidos');
-  const [tv,movies,series]=await Promise.all([
-    xtreamFetch(source,'get_live_streams'),
-    xtreamFetch(source,'get_vod_streams'),
-    xtreamFetch(source,'get_series')
-  ]);
-  const host=source.host.replace(/\/+$/,'');
-  const tvItems=(Array.isArray(tv)?tv:[]).map(x=>({title:x.name,url:`${host}/live/${encodeURIComponent(source.username)}/${encodeURIComponent(source.password)}/${x.stream_id}.m3u8`,group:x.category_name||'TV',logo:x.stream_icon||'',type:'tv'}));
-  const movieItems=(Array.isArray(movies)?movies:[]).map(x=>({title:x.name,url:`${host}/movie/${encodeURIComponent(source.username)}/${encodeURIComponent(source.password)}/${x.stream_id}.${x.container_extension||'mp4'}`,group:x.category_name||'Películas',logo:x.stream_icon||'',type:'movies'}));
-  const seriesItems=(Array.isArray(series)?series:[]).map(x=>({title:x.name,url:null,group:x.category_name||'Series',logo:x.cover||'',type:'series',seriesId:x.series_id,source}));
-  return [...tvItems,...movieItems,...seriesItems];
-}
-async function loadSource(source){
-  $('status').textContent='Cargando '+source.name+'...';
-  items=[];
-  try{
-    items=source.kind==='m3u'?await loadM3U(source):await loadXtream(source);
-    $('status').textContent=`${items.length} elementos cargados · ${source.name}`;
-    render();
-  }catch(e){$('status').textContent='No se pudo cargar la lista';toast(e.message)}
-}
-function groupsForView(){
-  let arr=currentView==='home'?items:items.filter(x=>x.type===currentView);
-  return ['Todos',...Array.from(new Set(arr.map(x=>x.group).filter(Boolean))).slice(0,60)];
-}
-function renderTabs(){
-  const groups=groupsForView();
-  if(!groups.includes(currentGroup)) currentGroup='Todos';
-  $('tabs').innerHTML=groups.map(g=>`<button class="tab ${g===currentGroup?'active':''}" data-group="${esc(g)}">${esc(g)}</button>`).join('');
-  $('tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{currentGroup=b.dataset.group;render()});
-}
+function save(){localStorage.setItem(KEY,JSON.stringify(sources));localStorage.setItem(FAV,JSON.stringify(favorites));localStorage.setItem(HIST,JSON.stringify(history))}
+function toast(m){$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2800)}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function cleanUrl(s){return (s||'').trim().replace(/^["']|["']$/g,'')}
+function attrs(line){let o={},r=/([\w-]+)=(?:"([^"]*)"|([^\s,]+))/g,m;while((m=r.exec(line)))o[m[1].toLowerCase()]=m[2]??m[3]??'';return o}
+function typeOf(group,title){let s=(group+' '+title).toLowerCase();if(/series|serie|season|temporada|episode|episodio/.test(s))return'series';if(/movie|pelicula|película|cine|vod|film/.test(s))return'movies';return'tv'}
+function parseM3U(text){
+ let lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),out=[];
+ for(let i=0;i<lines.length;i++){if(!lines[i].toUpperCase().startsWith('#EXTINF'))continue;let info=lines[i],url=lines[i+1]&&!lines[i+1].startsWith('#')?cleanUrl(lines[i+1]):'';if(!url)continue;let c=info.indexOf(','),title=c>=0?info.slice(c+1).trim():'Sin nombre',a=attrs(info),group=a['group-title']||a.group||'Otros';out.push({id:'m3u_'+i+'_'+url,title,url,group,logo:a['tvg-logo']||a.logo||'',type:typeOf(group,title),sourceName:'M3U'});}
+ return out;
+}
+async function loadM3U(s){if(s.text)return parseM3U(s.text);let r=await fetch(s.url);if(!r.ok)throw Error('No se pudo descargar la lista M3U');return parseM3U(await r.text())}
+async function xt(s,action,params={}){
+ let base=s.host.replace(/\/+$/,'')+'/player_api.php',q=new URLSearchParams({username:s.username,password:s.password,...(action?{action}:{}),...params}),r=await fetch(base+'?'+q);if(!r.ok)throw Error('Error HTTP '+r.status);return r.json();
+}
+async function loadXtream(s){
+ let info=await xt(s,'');if(!info.user_info||String(info.user_info.auth)!=='1')throw Error('Usuario o contraseña no válidos');
+ let [tv,mov,ser]=await Promise.all([xt(s,'get_live_streams'),xt(s,'get_vod_streams'),xt(s,'get_series')]),host=s.host.replace(/\/+$/,'');
+ let tvs=(Array.isArray(tv)?tv:[]).map(x=>({id:'tv_'+x.stream_id,title:x.name,url:`${host}/live/${encodeURIComponent(s.username)}/${encodeURIComponent(s.password)}/${x.stream_id}.m3u8`,group:x.category_name||'TV',logo:x.stream_icon||'',type:'tv',source:s}));
+ let movies=(Array.isArray(mov)?mov:[]).map(x=>({id:'mov_'+x.stream_id,title:x.name,url:`${host}/movie/${encodeURIComponent(s.username)}/${encodeURIComponent(s.password)}/${x.stream_id}.${x.container_extension||'mp4'}`,group:x.category_name||'Películas',logo:x.stream_icon||'',type:'movies',source:s,plot:x.plot||'',year:x.year||''}));
+ let series=(Array.isArray(ser)?ser:[]).map(x=>({id:'ser_'+x.series_id,title:x.name,url:null,group:x.category_name||'Series',logo:x.cover||'',type:'series',seriesId:x.series_id,source:s,plot:x.plot||'',year:x.year||''}));
+ return [...tvs,...movies,...series];
+}
+async function loadSource(s){
+ $('status').textContent='Cargando '+s.name+'...';
+ try{items=s.kind==='m3u'?await loadM3U(s):await loadXtream(s);$('status').textContent=`${items.length} elementos · ${s.name}`;currentView='home';currentGroup='Todos';render()}
+ catch(e){$('status').textContent='No se pudo cargar la lista';toast(e.message)}
+}
+function currentArray(){
+ let a=currentView==='home'?items:currentView==='favorites'?items.filter(x=>favorites.includes(x.id)):currentView==='history'?history.map(id=>items.find(x=>x.id===id)).filter(Boolean):items.filter(x=>x.type===currentView);
+ if(currentGroup!=='Todos')a=a.filter(x=>x.group===currentGroup);let q=$('search').value.toLowerCase().trim();if(q)a=a.filter(x=>(x.title+' '+x.group).toLowerCase().includes(q));return a;
+}
+function renderChips(){
+ let groups=[...new Set((currentView==='home'?items:items.filter(x=>x.type===currentView)).map(x=>x.group).filter(Boolean))].slice(0,70);
+ if(currentView==='favorites'||currentView==='history')groups=[]; if(currentView==='series'&&currentSeries)groups=[];
+ let all=['Todos',...groups];if(!all.includes(currentGroup))currentGroup='Todos';
+ $('chips').innerHTML=all.map(g=>`<button class="chip ${g===currentGroup?'active':''}" data-g="${esc(g)}">${esc(g)}</button>`).join('');
+ $('chips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{currentGroup=b.dataset.g;render()});
+}
+function card(x){
+ let fav=favorites.includes(x.id);
+ return `<article class="card" data-id="${esc(x.id)}"><img class="poster" src="${esc(x.logo||'')}" onerror="this.style.visibility='hidden'"><button class="fav ${fav?'on':''}" data-fav="${esc(x.id)}">${fav?'★':'☆'}</button><div class="cardbody"><div class="title">${esc(x.title)}</div><div class="meta">${esc(x.group||x.type)}${x.year?' · '+esc(x.year):''}</div></div></article>`;
+}
 function render(){
-  renderTabs();
-  const q=$('search').value.toLowerCase().trim();
-  let arr=currentView==='home'?items:items.filter(x=>x.type===currentView);
-  if(currentGroup!=='Todos') arr=arr.filter(x=>x.group===currentGroup);
-  if(q) arr=arr.filter(x=>(x.title+' '+x.group).toLowerCase().includes(q));
-  if(!arr.length){$('content').innerHTML='<div class="empty">No hay contenido para mostrar.<br>Agrega una lista M3U o Xtream Codes autorizada.</div>';return}
-  $('content').innerHTML='<div class="grid">'+arr.slice(0,1000).map((x,i)=>`
-    <article class="card" data-i="${i}">
-      <img class="poster" src="${esc(x.logo||'')}" onerror="this.style.visibility='hidden'">
-      <div class="cardbody"><div class="title">${esc(x.title)}</div><div class="meta">${esc(x.group||x.type)}</div></div>
-    </article>`).join('')+'</div>';
-  const shown=arr.slice(0,1000);
-  $('content').querySelectorAll('.card').forEach(c=>c.onclick=()=>play(shown[Number(c.dataset.i)]));
+ renderChips();
+ if(currentSeries){renderEpisodes();return}
+ let arr=currentArray();if(!arr.length){$('content').innerHTML='<div class="empty">No hay contenido para mostrar.</div>';return}
+ $('content').innerHTML='<div class="grid">'+arr.slice(0,1200).map(card).join('')+'</div>';
+ $('content').querySelectorAll('.card').forEach(c=>c.onclick=e=>{if(e.target.closest('.fav'))return;let x=items.find(i=>i.id===c.dataset.id);if(x?.type==='series')openSeries(x);else play(x)});
+ $('content').querySelectorAll('[data-fav]').forEach(b=>b.onclick=e=>{e.stopPropagation();toggleFav(b.dataset.fav)});
 }
-async function play(item){
-  if(!item.url){toast('Las series necesitan cargar sus episodios desde Xtream Codes.');return}
-  $('playerTitle').textContent=item.title;$('player').classList.add('show');
-  const video=$('video'); if(hls){hls.destroy();hls=null} video.src='';
-  try{
-    if(item.url.includes('.m3u8')){
-      if(video.canPlayType('application/vnd.apple.mpegurl')) video.src=item.url;
-      else if(Hls.isSupported()){hls=new Hls({enableWorker:true});hls.loadSource(item.url);hls.attachMedia(video)}
-      else throw new Error('Este navegador no soporta HLS');
-    }else video.src=item.url;
-    await video.play().catch(()=>{});
-  }catch(e){toast(e.message)}
+function toggleFav(id){favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];save();render();toast(favorites.includes(id)?'Añadido a favoritos':'Quitado de favoritos')}
+async function openSeries(s){
+ if(s.source.kind!=='xtream'){toast('Para temporadas y episodios se necesita Xtream Codes.');return}
+ try{$('status').textContent='Cargando temporadas y episodios...';let d=await xt(s.source,'get_series_info',{series_id:s.seriesId});currentSeries=s;currentSeriesEpisodes=d;render();$('status').textContent=s.title}catch(e){toast(e.message)}
 }
-$('closePlayer').onclick=()=>{if(hls){hls.destroy();hls=null} $('video').pause();$('video').src='';$('player').classList.remove('show')}
+function renderEpisodes(){
+ $('chips').innerHTML='';
+ let seasons=currentSeriesEpisodes?.episodes||{}, keys=Object.keys(seasons).sort((a,b)=>Number(a)-Number(b));
+ let rows=[];
+ keys.forEach(k=>(Array.isArray(seasons[k])?seasons[k]:[]).forEach(ep=>rows.push({...ep,season:k})));
+ $('content').innerHTML=`<div class="backrow"><button class="btn secondary" id="backSeries">← Series</button><h2>${esc(currentSeries.title)}</h2></div><div class="grid">${rows.map(ep=>{let u=ep.info?.movie_image||ep.info?.cover_big||'';let url=ep.info?.container_extension?`${currentSeries.source.host.replace(/\/+$/,'')}/series/${encodeURIComponent(currentSeries.source.username)}/${encodeURIComponent(currentSeries.source.password)}/${ep.id}.${ep.info.container_extension}`:null;return `<article class="card episode" data-url="${esc(url||'')}" data-title="${esc(ep.title||'Capítulo '+ep.episode_num)}"><img class="poster" src="${esc(u)}" onerror="this.style.visibility='hidden'"><div class="cardbody"><div class="title">${esc(ep.title||'Capítulo '+ep.episode_num)}</div><div class="meta">Temporada ${esc(ep.season)} · Episodio ${esc(ep.episode_num||'')}</div></div></article>`}).join('')}</div>`;
+ $('content').querySelector('#backSeries').onclick=()=>{currentSeries=null;currentSeriesEpisodes=null;render()};
+ $('content').querySelectorAll('.episode').forEach(c=>c.onclick=()=>play({title:c.dataset.title,url:c.dataset.url}));
+}
+function play(x){
+ if(!x.url){toast('Este contenido no tiene un enlace reproducible.');return}
+ if(hls){hls.destroy();hls=null}$('playerTitle').textContent=x.title;$('player').classList.add('show');let v=$('video');v.src='';
+ if(x.url.includes('.m3u8')){if(v.canPlayType('application/vnd.apple.mpegurl'))v.src=x.url;else if(window.Hls?.isSupported()){hls=new Hls({enableWorker:true});hls.loadSource(x.url);hls.attachMedia(v)}else{toast('HLS no está disponible en este navegador');return}}else v.src=x.url;
+ history=[x.id,...history.filter(id=>id!==x.id)].slice(0,50);save();v.play().catch(()=>{});
+}
+function closePlayer(){if(hls){hls.destroy();hls=null}$('video').pause();$('video').src='';$('player').classList.remove('show')}
+function showSources(){
+ $('sourcesList').innerHTML=sources.length?sources.map(s=>`<div class="saved"><div><b>${esc(s.name)}</b><small>${s.kind==='m3u'?'M3U':'Xtream Codes'}</small></div><button class="btn" data-load="${esc(s.id)}">Cargar</button><button class="btn danger" data-del="${esc(s.id)}">×</button></div>`).join(''):'<div class="empty">No hay listas guardadas.</div>';
+ $('sourcesList').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{let s=sources.find(x=>x.id===b.dataset.load);$('sourcesModal').classList.remove('show');loadSource(s)});
+ $('sourcesList').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{sources=sources.filter(x=>x.id!==b.dataset.del);save();showSources();toast('Lista eliminada')});
+ $('sourcesModal').classList.add('show');
+}
+$('addBtn').onclick=()=>{$('modal').classList.add('show')};$('cancelBtn').onclick=()=>{$('modal').classList.remove('show')};$('closeSources').onclick=()=>{$('sourcesModal').classList.remove('show')};$('sourcesBtn').onclick=showSources;
+$('closePlayer').onclick=closePlayer;
 $('search').oninput=render;
-$('refreshBtn').onclick=()=>{const s=sources[sources.length-1];if(s)loadSource(s);else toast('Primero agrega una lista')};
-document.querySelectorAll('.nav button[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentView=b.dataset.view;currentGroup='Todos';render()});
-$('addBtn').onclick=()=>$('modal').classList.add('show');
-$('cancelBtn').onclick=()=>$('modal').classList.remove('show');
-$('m3uTab').onclick=()=>{ $('m3uTab').classList.add('active');$('xtreamTab').classList.remove('active');$('m3uForm').style.display='block';$('xtreamForm').style.display='none'};
-$('xtreamTab').onclick=()=>{ $('xtreamTab').classList.add('active');$('m3uTab').classList.remove('active');$('m3uForm').style.display='none';$('xtreamForm').style.display='block'};
+$('refreshBtn').onclick=()=>{let s=sources.find(x=>x.id===localStorage.getItem('master_active_source'));if(!s)s=sources[sources.length-1];if(s)loadSource(s);else toast('Primero agrega una lista')};
+document.querySelectorAll('.nav button[data-view]').forEach(b=>b.onclick=()=>{currentSeries=null;currentSeriesEpisodes=null;document.querySelectorAll('.nav button[data-view]').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentView=b.dataset.view;currentGroup='Todos';render()});
+$('m3uTab').onclick=()=>{$('m3uTab').classList.add('active');$('xtreamTab').classList.remove('active');$('m3uForm').style.display='block';$('xtreamForm').style.display='none'};
+$('xtreamTab').onclick=()=>{$('xtreamTab').classList.add('active');$('m3uTab').classList.remove('active');$('m3uForm').style.display='none';$('xtreamForm').style.display='block'};
 $('saveBtn').onclick=async()=>{
-  try{
-    let s;
-    if($('m3uForm').style.display!=='none'){
-      const name=$('m3uName').value.trim()||'Lista M3U', url=$('m3uUrl').value.trim(), text=$('m3uText').value.trim();
-      if(!url&&!text) throw new Error('Pon una URL M3U o pega el contenido M3U');
-      s={id:crypto.randomUUID(),kind:'m3u',name,url,text};
-    }else{
-      const name=$('xtName').value.trim()||'Xtream',host=$('xtHost').value.trim(),username=$('xtUser').value.trim(),password=$('xtPass').value;
-      if(!host||!username||!password) throw new Error('Completa servidor, usuario y contraseña');
-      if(!/^https?:\/\//i.test(host)) throw new Error('El servidor debe comenzar con http:// o https://');
-      s={id:crypto.randomUUID(),kind:'xtream',name,host,username,password};
-    }
-    sources=sources.filter(x=>x.name!==s.name);sources.push(s);saveSources();
-    $('modal').classList.remove('show');await loadSource(s);
-    toast('Lista guardada en este navegador');
-  }catch(e){toast(e.message)}
+ try{
+  let s;
+  if($('m3uForm').style.display!=='none'){let name=$('m3uName').value.trim()||'Lista M3U',url=$('m3uUrl').value.trim(),text=$('m3uText').value.trim();if(!url&&!text)throw Error('Pon una URL M3U o pega el contenido');s={id:crypto.randomUUID(),kind:'m3u',name,url,text}}
+  else{let name=$('xtName').value.trim()||'Xtream',host=$('xtHost').value.trim(),username=$('xtUser').value.trim(),password=$('xtPass').value;if(!/^https?:\/\//i.test(host))throw Error('El servidor debe comenzar con http:// o https://');if(!host||!username||!password)throw Error('Completa todos los campos');s={id:crypto.randomUUID(),kind:'xtream',name,host,username,password}}
+  sources=sources.filter(x=>x.name!==s.name);sources.push(s);localStorage.setItem('master_active_source',s.id);save();$('modal').classList.remove('show');await loadSource(s);toast('Lista guardada')}
+ catch(e){toast(e.message)}
 };
-if(sources.length) loadSource(sources[sources.length-1]); else render();
+if(sources.length){let id=localStorage.getItem('master_active_source'),s=sources.find(x=>x.id===id)||sources[sources.length-1];loadSource(s)}else render();
 </script>
 </body>
 </html>

@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Master IPTV</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17"></script>
+<style>
+:root{--bg:#080b12;--panel:#111722;--panel2:#171e2b;--text:#f5f7fb;--muted:#9ba7ba;--accent:#6c63ff;--accent2:#8b84ff;--border:#252e3d}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#070a10,#0d1220 55%,#090b12);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+.app{display:flex;min-height:100vh}.side{width:250px;background:rgba(10,14,22,.96);border-right:1px solid var(--border);padding:22px 14px;position:fixed;inset:0 auto 0 0;z-index:5}
+.logo{font-size:22px;font-weight:800;padding:8px 12px 24px}.logo span{color:var(--accent)}
+.nav button,.sourceBtn{width:100%;border:0;background:transparent;color:var(--muted);padding:13px 14px;border-radius:12px;text-align:left;font-size:15px;cursor:pointer;transition:.2s}
+.nav button:hover,.nav button.active,.sourceBtn:hover{background:var(--panel2);color:#fff;transform:translateX(3px)}
+.main{margin-left:250px;width:calc(100% - 250px);padding:22px;min-width:0}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:20px}
+.search{flex:1;max-width:650px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 15px;color:#fff;outline:0}.btn{border:0;border-radius:12px;padding:11px 15px;background:var(--accent);color:white;font-weight:700;cursor:pointer;transition:.2s}.btn:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 8px 25px rgba(108,99,255,.2)}
+.hero{background:linear-gradient(120deg,#171d32,#101722);border:1px solid var(--border);border-radius:20px;padding:25px;margin-bottom:22px}.hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;color:var(--muted)}
+.tabs{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}.tab{padding:9px 14px;border-radius:999px;border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer}.tab.active{background:var(--accent);color:white;border-color:transparent}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:15px}.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:.22s}.card:hover{transform:translateY(-4px);border-color:#414c62}.poster{width:100%;aspect-ratio:16/9;object-fit:cover;background:#0b0f17;display:block}.cardbody{padding:12px}.title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{font-size:12px;color:var(--muted);margin-top:5px}
+.empty{padding:45px 20px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:16px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal.show{display:flex}.box{width:min(620px,100%);background:#101620;border:1px solid var(--border);border-radius:20px;padding:22px}.box h2{margin-top:0}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{margin-bottom:12px}.field label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}.field input,.field textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0a0e15;color:#fff;outline:0}.field textarea{min-height:110px;resize:vertical}.actions{display:flex;gap:9px;justify-content:flex-end}.secondary{background:#202838}
+.player{position:fixed;inset:0;background:#05070b;display:none;z-index:30;flex-direction:column}.player.show{display:flex}.playerbar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#0d1119}.playerbar h3{margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.videoWrap{flex:1;display:flex;align-items:center;justify-content:center;background:#000}.videoWrap video{width:100%;height:100%;object-fit:contain}.close{background:#202838}
+.toast{position:fixed;right:20px;bottom:20px;background:#171e2b;border:1px solid var(--border);padding:12px 15px;border-radius:12px;display:none;z-index:50}.toast.show{display:block}
+@media(max-width:800px){.side{width:70px;padding:14px 8px}.logo{font-size:0;text-align:center}.logo span{font-size:20px}.nav button{font-size:0;text-align:center}.nav button:before{content:'•';font-size:22px}.main{margin-left:70px;width:calc(100% - 70px);padding:14px}.row{grid-template-columns:1fr}.grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}.hero h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="logo">Master <span>IPTV</span></div>
+  <div class="nav">
+    <button class="active" data-view="home">⌂ Inicio</button>
+    <button data-view="tv">▣ TV</button>
+    <button data-view="movies">▶ Películas</button>
+    <button data-view="series">▤ Series</button>
+    <button id="addBtn">＋ Agregar lista</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <input id="search" class="search" placeholder="Buscar canales, películas o series...">
+    <button class="btn" id="refreshBtn">Actualizar</button>
+  </div>
+  <section class="hero">
+    <h1 id="welcome">Master IPTV</h1>
+    <p id="status">Agrega una lista M3U o inicia sesión con Xtream Codes.</p>
+  </section>
+  <div class="tabs" id="tabs"></div>
+  <section id="content"></section>
+</main>
+</div>
+
+<div class="modal" id="modal">
+<div class="box">
+  <h2>Agregar fuente</h2>
+  <div class="tabs">
+    <button class="tab active" id="m3uTab">M3U</button>
+    <button class="tab" id="xtreamTab">Xtream Codes</button>
+  </div>
+  <div id="m3uForm">
+    <div class="field"><label>Nombre de la lista</label><input id="m3uName" placeholder="Mi lista"></div>
+    <div class="field"><label>URL M3U (HTTP o HTTPS)</label><input id="m3uUrl" placeholder="https://ejemplo.com/lista.m3u"></div>
+    <div class="field"><label>O, pega aquí el contenido M3U</label><textarea id="m3uText" placeholder="#EXTM3U&#10;#EXTINF:-1 group-title=&quot;TV&quot;,Canal&#10;https://..."></textarea></div>
+  </div>
+  <div id="xtreamForm" style="display:none">
+    <div class="field"><label>Nombre de la lista</label><input id="xtName" placeholder="Mi servidor"></div>
+    <div class="field"><label>Servidor / Host (HTTP o HTTPS)</label><input id="xtHost" placeholder="https://servidor:puerto"></div>
+    <div class="row">
+      <div class="field"><label>Usuario</label><input id="xtUser"></div>
+      <div class="field"><label>Contraseña</label><input id="xtPass" type="password"></div>
+    </div>
+  </div>
+  <div class="actions"><button class="btn secondary" id="cancelBtn">Cancelar</button><button class="btn" id="saveBtn">Guardar y cargar</button></div>
+</div>
+</div>
+
+<div class="player" id="player">
+  <div class="playerbar"><button class="btn close" id="closePlayer">← Volver</button><h3 id="playerTitle">Reproductor</h3></div>
+  <div class="videoWrap"><video id="video" controls autoplay playsinline></video></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='master_iptv_sources_v1';
+let sources=JSON.parse(localStorage.getItem(KEY)||'[]');
+let items=[], currentView='home', currentGroup='Todos', hls=null;
+
+const $=id=>document.getElementById(id);
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2800)}
+function saveSources(){localStorage.setItem(KEY,JSON.stringify(sources))}
+function cleanUrl(s){return (s||'').trim().replace(/^["']|["']$/g,'')}
+function parseAttrs(line){
+  const attrs={}; const re=/([\\w-]+)=(?:"([^"]*)"|([^\\s,]+))/g; let m;
+  while((m=re.exec(line))) attrs[m[1].toLowerCase()]=m[2]??m[3]??'';
+  return attrs;
+}
+function parseM3U(text){
+  const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean), out=[];
+  for(let i=0;i<lines.length;i++){
+    if(!lines[i].toUpperCase().startsWith('#EXTINF')) continue;
+    const info=lines[i], url=lines[i+1] && !lines[i+1].startsWith('#') ? cleanUrl(lines[i+1]) : '';
+    if(!url) continue;
+    const comma=info.indexOf(','), title=comma>=0?info.slice(comma+1).trim():'Sin nombre';
+    const a=parseAttrs(info);
+    const group=a['group-title']||a['group']||'Otros';
+    const logo=a['tvg-logo']||a['logo']||'';
+    out.push({title,url,group,logo,type:guessType(group,title)});
+  }
+  return out;
+}
+function guessType(group,title){
+  const s=(group+' '+title).toLowerCase();
+  if(/series|serie|season|temporada|episode|episodio/.test(s)) return 'series';
+  if(/movie|pelicula|película|cine|vod|film/.test(s)) return 'movies';
+  return 'tv';
+}
+async function loadM3U(source){
+  let text=source.text;
+  if(!text){
+    const r=await fetch(source.url); if(!r.ok) throw new Error('No se pudo descargar la lista M3U');
+    text=await r.text();
+  }
+  return parseM3U(text);
+}
+async function xtreamFetch(source,action,extra=''){
+  const base=source.host.replace(/\/+$/,'')+'/player_api.php';
+  const q=new URLSearchParams({username:source.username,password:source.password,action,...Object.fromEntries(new URLSearchParams(extra))});
+  const r=await fetch(base+'?'+q.toString());
+  if(!r.ok) throw new Error('Error HTTP '+r.status);
+  return r.json();
+}
+async function loadXtream(source){
+  const info=await xtreamFetch(source,'');
+  if(!info.user_info || String(info.user_info.auth)!=='1') throw new Error('Usuario o contraseña no válidos');
+  const [tv,movies,series]=await Promise.all([
+    xtreamFetch(source,'get_live_streams'),
+    xtreamFetch(source,'get_vod_streams'),
+    xtreamFetch(source,'get_series')
+  ]);
+  const host=source.host.replace(/\/+$/,'');
+  const tvItems=(Array.isArray(tv)?tv:[]).map(x=>({title:x.name,url:`${host}/live/${encodeURIComponent(source.username)}/${encodeURIComponent(source.password)}/${x.stream_id}.m3u8`,group:x.category_name||'TV',logo:x.stream_icon||'',type:'tv'}));
+  const movieItems=(Array.isArray(movies)?movies:[]).map(x=>({title:x.name,url:`${host}/movie/${encodeURIComponent(source.username)}/${encodeURIComponent(source.password)}/${x.stream_id}.${x.container_extension||'mp4'}`,group:x.category_name||'Películas',logo:x.stream_icon||'',type:'movies'}));
+  const seriesItems=(Array.isArray(series)?series:[]).map(x=>({title:x.name,url:null,group:x.category_name||'Series',logo:x.cover||'',type:'series',seriesId:x.series_id,source}));
+  return [...tvItems,...movieItems,...seriesItems];
+}
+async function loadSource(source){
+  $('status').textContent='Cargando '+source.name+'...';
+  items=[];
+  try{
+    items=source.kind==='m3u'?await loadM3U(source):await loadXtream(source);
+    $('status').textContent=`${items.length} elementos cargados · ${source.name}`;
+    render();
+  }catch(e){$('status').textContent='No se pudo cargar la lista';toast(e.message)}
+}
+function groupsForView(){
+  let arr=currentView==='home'?items:items.filter(x=>x.type===currentView);
+  return ['Todos',...Array.from(new Set(arr.map(x=>x.group).filter(Boolean))).slice(0,60)];
+}
+function renderTabs(){
+  const groups=groupsForView();
+  if(!groups.includes(currentGroup)) currentGroup='Todos';
+  $('tabs').innerHTML=groups.map(g=>`<button class="tab ${g===currentGroup?'active':''}" data-group="${esc(g)}">${esc(g)}</button>`).join('');
+  $('tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{currentGroup=b.dataset.group;render()});
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){
+  renderTabs();
+  const q=$('search').value.toLowerCase().trim();
+  let arr=currentView==='home'?items:items.filter(x=>x.type===currentView);
+  if(currentGroup!=='Todos') arr=arr.filter(x=>x.group===currentGroup);
+  if(q) arr=arr.filter(x=>(x.title+' '+x.group).toLowerCase().includes(q));
+  if(!arr.length){$('content').innerHTML='<div class="empty">No hay contenido para mostrar.<br>Agrega una lista M3U o Xtream Codes autorizada.</div>';return}
+  $('content').innerHTML='<div class="grid">'+arr.slice(0,1000).map((x,i)=>`
+    <article class="card" data-i="${i}">
+      <img class="poster" src="${esc(x.logo||'')}" onerror="this.style.visibility='hidden'">
+      <div class="cardbody"><div class="title">${esc(x.title)}</div><div class="meta">${esc(x.group||x.type)}</div></div>
+    </article>`).join('')+'</div>';
+  const shown=arr.slice(0,1000);
+  $('content').querySelectorAll('.card').forEach(c=>c.onclick=()=>play(shown[Number(c.dataset.i)]));
+}
+async function play(item){
+  if(!item.url){toast('Las series necesitan cargar sus episodios desde Xtream Codes.');return}
+  $('playerTitle').textContent=item.title;$('player').classList.add('show');
+  const video=$('video'); if(hls){hls.destroy();hls=null} video.src='';
+  try{
+    if(item.url.includes('.m3u8')){
+      if(video.canPlayType('application/vnd.apple.mpegurl')) video.src=item.url;
+      else if(Hls.isSupported()){hls=new Hls({enableWorker:true});hls.loadSource(item.url);hls.attachMedia(video)}
+      else throw new Error('Este navegador no soporta HLS');
+    }else video.src=item.url;
+    await video.play().catch(()=>{});
+  }catch(e){toast(e.message)}
+}
+$('closePlayer').onclick=()=>{if(hls){hls.destroy();hls=null} $('video').pause();$('video').src='';$('player').classList.remove('show')}
+$('search').oninput=render;
+$('refreshBtn').onclick=()=>{const s=sources[sources.length-1];if(s)loadSource(s);else toast('Primero agrega una lista')};
+document.querySelectorAll('.nav button[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentView=b.dataset.view;currentGroup='Todos';render()});
+$('addBtn').onclick=()=>$('modal').classList.add('show');
+$('cancelBtn').onclick=()=>$('modal').classList.remove('show');
+$('m3uTab').onclick=()=>{ $('m3uTab').classList.add('active');$('xtreamTab').classList.remove('active');$('m3uForm').style.display='block';$('xtreamForm').style.display='none'};
+$('xtreamTab').onclick=()=>{ $('xtreamTab').classList.add('active');$('m3uTab').classList.remove('active');$('m3uForm').style.display='none';$('xtreamForm').style.display='block'};
+$('saveBtn').onclick=async()=>{
+  try{
+    let s;
+    if($('m3uForm').style.display!=='none'){
+      const name=$('m3uName').value.trim()||'Lista M3U', url=$('m3uUrl').value.trim(), text=$('m3uText').value.trim();
+      if(!url&&!text) throw new Error('Pon una URL M3U o pega el contenido M3U');
+      s={id:crypto.randomUUID(),kind:'m3u',name,url,text};
+    }else{
+      const name=$('xtName').value.trim()||'Xtream',host=$('xtHost').value.trim(),username=$('xtUser').value.trim(),password=$('xtPass').value;
+      if(!host||!username||!password) throw new Error('Completa servidor, usuario y contraseña');
+      if(!/^https?:\/\//i.test(host)) throw new Error('El servidor debe comenzar con http:// o https://');
+      s={id:crypto.randomUUID(),kind:'xtream',name,host,username,password};
+    }
+    sources=sources.filter(x=>x.name!==s.name);sources.push(s);saveSources();
+    $('modal').classList.remove('show');await loadSource(s);
+    toast('Lista guardada en este navegador');
+  }catch(e){toast(e.message)}
+};
+if(sources.length) loadSource(sources[sources.length-1]); else render();
+</script>
+</body>
+</html>
